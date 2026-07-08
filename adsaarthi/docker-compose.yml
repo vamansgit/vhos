@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      ADSAARTHI_DATABASE_URL: sqlite:////data/adsaarthi.db
+      ADSAARTHI_JWT_SECRET: ${ADSAARTHI_JWT_SECRET:-change-me-in-production}
+      ADSAARTHI_CORS_ORIGINS: '["http://localhost:5173"]'
+    volumes:
+      - adsaarthi_data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  adsaarthi_data:
