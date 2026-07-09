@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8001:8001"
+    environment:
+      NEXUS_DATABASE_URL: sqlite:////data/nexus.db
+      NEXUS_JWT_SECRET: ${NEXUS_JWT_SECRET:-change-me-in-production}
+      NEXUS_CORS_ORIGINS: '["http://localhost:5174"]'
+    volumes:
+      - nexus_data:/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8001
+    ports:
+      - "5174:5174"
+    depends_on:
+      - backend
+
+volumes:
+  nexus_data:
